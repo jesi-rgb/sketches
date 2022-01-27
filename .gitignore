@@ -1,0 +1,5 @@
+outputs/
+renders/
+.DS_Store
+*.otf
+*.ttf
