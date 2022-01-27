@@ -9,21 +9,16 @@ class Circle {
   constructor(x, y, r, c) {
     this.x = x;
     this.y = y;
-    this.r = r / 2;
+    this.r = r;
     this.color = c;
     this.growing = true;
   }
 
   display() {
-    // blendMode(DIFFERENCE);
-    // noStroke();
-    stroke(this.color);
-    strokeWeight(3);
-    noFill();
+    noStroke();
     fill(this.color);
     point(this.x, this.y);
-    // line(this.x, this.y, this.x + this.r / 2, this.y);
-    circle(this.x, this.y, this.r);
+    circle(this.x, this.y, this.r * 2);
   }
 
   grow() {
@@ -35,7 +30,7 @@ class Circle {
       circles.forEach((c) => {
         if (c.x != this.x && c.y != this.y) {
           var rDist = dist(c.x, c.y, this.x, this.y);
-          var rSum = c.r / 2 + this.r / 2;
+          var rSum = c.r + this.r;
 
           if (rDist < rSum + padding) {
             this.growing = false;
@@ -45,12 +40,20 @@ class Circle {
     }
   }
 
+  touchedCircleEdge(c, padding) {
+    if (this.growing) {
+      if (this.r >= c.r - dist(c.x, c.y, this.x, this.y) - padding) {
+        this.growing = false;
+      }
+    }
+  }
+
   touchedEdges(minW, maxW, minH, maxH) {
     if (
-      this.x + this.r / 2 >= maxW ||
-      this.x - this.r / 2 <= minW ||
-      this.y + this.r / 2 >= maxH ||
-      this.y - this.r / 2 <= minH
+      this.x + this.r >= maxW ||
+      this.x - this.r <= minW ||
+      this.y + this.r >= maxH ||
+      this.y - this.r <= minH
     )
       this.growing = false;
   }
@@ -73,30 +76,22 @@ function setup() {
   wx = w;
   wy = w;
   //   frameRate(3);
-  colorMode(HSB);
-  createCanvas(wx, wy);
+  colorMode(HSB, 100);
+  createCanvas(wx, wx);
 
   generateCirclesOneByOne(1000);
-  circles.map((c) => c.display());
+  recursiveCircles();
+
+  //clean up
+  circles = circles.filter((c) => c.r > 2);
 }
 
 function draw() {
   noLoop();
-  blendMode(BLEND);
+  //   blendMode(BLEND);
   background(0, 15, 15);
-  //   drawFrame();
-  //   generateCirclesStep();
-
-  //   circles.map((c) => c.update());
 
   circles.map((c) => c.display());
-  //   circles.map((c) => c.grow());
-  //   circles.map((c) =>
-  //     c.touchedEdges(offset, width - offset, offset, height - offset)
-  //   );
-
-  //   circles.map((c) => c.touchedCircle(circles, 10));
-  //   noLoop();
 
   addHandle();
   //   save(`frame${frameCount}.png`);
@@ -116,6 +111,37 @@ function generateCircles(n) {
     if (n != numTries)
       circles.push(new Circle(randomX, randomY, 10, color(255, 255, 0)));
   }
+}
+
+function recursiveCircles() {
+  big_circles = circles.filter((c) => c.r > 200);
+
+  big_circles.forEach((c) => {
+    circles = circles.concat(populateCircle(c, random(30, 80)));
+  });
+}
+
+function populateCircle(c, n) {
+  let output = [];
+  for (let i = 0; i < n; i++) {
+    var r = c.r * sqrt(random());
+    var theta = random() * 2 * PI;
+    var x = c.x + r * cos(theta);
+    var y = c.y + r * sin(theta);
+    // console.log(
+    //   c.r + " | " + dist(c.x, c.y, x, y) + " | " + (c.r - dist(c.x, c.y, x, y))
+    // );
+
+    var newC = new Circle(x, y, 1, color(100, 50, 60, 50));
+    while (newC.growing) {
+      newC.grow();
+      newC.touchedCircle(output, 4);
+      newC.touchedCircleEdge(c, 4);
+    }
+
+    output.push(newC);
+  }
+  return output;
 }
 
 function generateCirclesOneByOne(n) {
@@ -146,9 +172,9 @@ function generateCirclesOneByOne(n) {
     const randomH = random(0, 360 - paletteWidth);
     // console.log(randomH + " -> " + (randomH + paletteWidth));
     c.color = color(
-      map(c.r, 1, 100, randomH, randomH + paletteWidth),
-      map(c.x, offset, w - offset, 0, 100),
-      100
+      map(c.r, 1, 100, 0, 5),
+      map(c.x, offset, w - offset, 0, 50),
+      90
     );
 
     circles.push(c);
@@ -177,7 +203,7 @@ function generateCircleOnClick() {
 
 function mousePressed() {
   if (mouseButton === RIGHT) {
-    save(`frame${new Date().getSeconds()}.png`);
+    save(`frame${new Date().getMilliseconds()}.png`);
   }
 }
 
