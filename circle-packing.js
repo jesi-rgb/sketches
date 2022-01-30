@@ -6,16 +6,18 @@ function preload() {
 }
 
 class Circle {
-  constructor(x, y, r, c) {
+  constructor(x, y, r, c, b = BLEND) {
     this.x = x;
     this.y = y;
     this.r = r;
     this.color = c;
+    this.blend = b;
     this.growing = true;
   }
 
   display() {
     noStroke();
+    blendMode(this.blend);
     fill(this.color);
     point(this.x, this.y);
     circle(this.x, this.y, this.r * 2);
@@ -70,16 +72,23 @@ class Circle {
 let w;
 let circles = [];
 let offset = 200;
+let palette;
 
 function setup() {
+  //   randomSeed(2);
+
   w = min(windowWidth, windowHeight) - 100;
   wx = w;
   wy = w;
   //   frameRate(3);
-  colorMode(HSB, 100);
+  //   colorMode(HSB, 100);
   createCanvas(wx, wx);
 
-  generateCirclesOneByOne(1000);
+  //   palette = palettes[int(random(0, palettes.length))];
+  //   palette = palettes[int(random(0, palettes.length - 1))];
+  palette = generatePalette(8);
+
+  generateCirclesOneByOne(100);
   recursiveCircles();
 
   //clean up
@@ -89,12 +98,60 @@ function setup() {
 function draw() {
   noLoop();
   //   blendMode(BLEND);
-  background(0, 15, 15);
+  background(color(palette[0]));
+  //   drawPalette(palette);
 
   circles.map((c) => c.display());
 
   addHandle();
   //   save(`frame${frameCount}.png`);
+}
+
+function generatePalette(n) {
+  colorMode(HSB);
+  var colors = [];
+  centerH = random(0, 360);
+  centerS = random(0, 60);
+  centerB = random(10, 20);
+
+  colors.push(color(centerH, centerS, centerB));
+
+  for (let i = 0; i < n; i++) {
+    new_h = (centerH + random(-50, 50)) % 360;
+    new_s = random(0, 60);
+    new_b = random(60, 100);
+
+    // console.log(i, new_h, new_s, new_b);
+    col = color(new_h, new_s, new_b);
+    colors.push(col);
+  }
+
+  console.log(colors);
+
+  colors.sort((c1, c2) => {
+    var v1 =
+      0.2126 * c1._array[0] + 0.7152 * c1._array[1] + 0.0722 * c1._array[2];
+
+    let v2 =
+      0.2126 * c2._array[0] + 0.7152 * c2._array[1] + 0.0722 * c2._array[2];
+
+    return v1 - v2;
+  });
+
+  console.log(colors);
+
+  colorMode(RGB);
+  return colors;
+}
+
+function drawPalette(palette) {
+  f = 50;
+
+  for (let i = 0; i < palette.length; i++) {
+    fill(palette[i]);
+    stroke(255);
+    rect((i + 1) * f, f, f, f);
+  }
 }
 
 function generateCircles(n) {
@@ -109,7 +166,14 @@ function generateCircles(n) {
     } while (checkOverlap(randomX, randomY) && n < numTries);
 
     if (n != numTries)
-      circles.push(new Circle(randomX, randomY, 10, color(255, 255, 0)));
+      circles.push(
+        new Circle(
+          randomX,
+          randomY,
+          10,
+          color(palette[int(random(1, palette.length))])
+        )
+      );
   }
 }
 
@@ -117,29 +181,34 @@ function recursiveCircles() {
   big_circles = circles.filter((c) => c.r > 200);
 
   big_circles.forEach((c) => {
-    circles = circles.concat(populateCircle(c, random(30, 80)));
+    circles = circles.concat(populateCircle(c, random(30, 40), 0));
   });
 }
 
-function populateCircle(c, n) {
+function populateCircle(c, n, recursive) {
   let output = [];
   for (let i = 0; i < n; i++) {
     var r = c.r * sqrt(random());
     var theta = random() * 2 * PI;
     var x = c.x + r * cos(theta);
     var y = c.y + r * sin(theta);
-    // console.log(
-    //   c.r + " | " + dist(c.x, c.y, x, y) + " | " + (c.r - dist(c.x, c.y, x, y))
-    // );
 
-    var newC = new Circle(x, y, 1, color(100, 50, 60, 50));
+    var newC = new Circle(x, y, 1, color(0, 0, 0), DODGE);
+
     while (newC.growing) {
       newC.grow();
       newC.touchedCircle(output, 4);
       newC.touchedCircleEdge(c, 4);
     }
 
+    newC.color = pickColor(newC, true);
+
     output.push(newC);
+    if (random() < 0.5 && recursive < 5) {
+      output = output.concat(
+        populateCircle(newC, random(5, 10), (recursive += 1))
+      );
+    }
   }
   return output;
 }
@@ -160,24 +229,30 @@ function generateCirclesOneByOne(n) {
       continue;
     }
 
-    var c = new Circle(randomX, randomY, 1, color(255, 255, 0));
+    var c = new Circle(randomX, randomY, 1, color(0, 0, 0, 0));
+    // console.log(c.color._array[0]);
+    // console.log(c.color._array[0]);
 
     while (c.growing) {
       c.grow();
       c.touchedEdges(offset, w - offset, offset, w - offset);
       c.touchedCircle(circles, 10);
     }
-
-    const paletteWidth = 5;
-    const randomH = random(0, 360 - paletteWidth);
-    // console.log(randomH + " -> " + (randomH + paletteWidth));
-    c.color = color(
-      map(c.r, 1, 100, 0, 5),
-      map(c.x, offset, w - offset, 0, 50),
-      90
-    );
+    c.color = pickColor(c);
 
     circles.push(c);
+  }
+}
+
+function pickColor(c, inside) {
+  if (inside) {
+    var col = color(palette[int(map(c.r, 1, 200, 1, 4, true))]);
+    col._array[3] = 0.5;
+
+    return col;
+  } else {
+    // console.log(palette[int(map(c.r, 1, 200, 1, 4, true))]);
+    return color(palette[int(map(c.r, 1, 200, 1, palette.length - 1, true))]);
   }
 }
 
