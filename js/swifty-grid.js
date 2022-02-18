@@ -183,13 +183,41 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  console.log(keyCode);
-  if (keyCode == 83) {
-    frameRate(3);
-    frameCount = 0;
-    saving = !saving;
-    looping = !looping;
+  console.log(key);
+  switch (key) {
+    // pressing the 's' key
+    case "s":
+      frameRate(3);
+      frameCount = 0;
+      saving = !saving;
+      looping = !looping;
 
-    if (looping) loop();
+      if (looping) loop();
+      if (!saving) frameRate(60);
+      break;
+
+    // pressing the '0' key
+    case "0":
+      frameCount = 0;
+      loop();
+      noLoop();
+      break;
+
+    // pressing the ← key
+    case "ArrowLeft":
+      frameCount >= 0 ? (frameCount -= 1) : (frameCount = 0);
+      noLoop();
+      console.log(frameCount);
+      break;
+
+    // pressing the → key
+    case "ArrowRights":
+      frameCount += 1;
+      noLoop();
+      console.log(frameCount);
+      break;
+
+    default:
+      break;
   }
 }
