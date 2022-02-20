@@ -44,8 +44,8 @@ function bigRotatingCircle() {
   for (a = 0; a < TAU; a += TAU / 100) {
     x = posX + radius * cos(a);
     y = posY + radius * sin(a);
-    // stroke(map(a, 0, TAU, 50, 120), 50, 100);
-    stroke(250);
+    stroke(map(a, 0, TAU, 0, 360), 50, 100);
+    // stroke(250);
 
     size = noise(x * noiseRes + speed, y * noiseRes + speed) * scale;
     strokeWeight(size);
@@ -73,8 +73,8 @@ function centerGrowingCircle() {
 
     size = noise(x * noiseRes + speed, y * noiseRes + speed) * scale;
     strokeWeight(size);
-    // stroke(map(a, 0, TAU, 50, 120), 50, 100);
-    stroke(250);
+    stroke(map(a, 0, TAU, 0, 360), 50, 100);
+    // stroke(250);
 
     point(x, y);
   }

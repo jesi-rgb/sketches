@@ -8,7 +8,8 @@ function preload() {
 
 function setup() {
   seed = random(1, 10000);
-  //6658.568178815671
+  // 6658.568178815671
+  // 8250.172416816093
   randomSeed(seed);
   console.log(seed);
 

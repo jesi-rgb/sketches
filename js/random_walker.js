@@ -1,12 +1,12 @@
 function setup() {
-  frameRate(4);
+  //   frameRate(4);
 
   w = min(windowWidth, windowHeight);
   wx = w;
   wy = w;
   createCanvas(wx, wy);
 
-  let spacing = 10;
+  let spacing = 50;
   let offset = 80;
   let MAX_WALKERS = 10;
 
@@ -40,6 +40,8 @@ function setup() {
   //     download: true,
   //     filename: "worms.gif",
   //   });
+
+  background(24);
 }
 
 function draw() {
