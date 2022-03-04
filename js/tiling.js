@@ -1,25 +1,20 @@
 let font;
 let offset = 0;
-let palette = ["#303030", "#04e695", "#f8f8f8"];
+let palette = ["#3fc1c9", "#f5f5f5", "#fc5185"];
+
 function preload() {
   font = loadFont("../SF-Mono-Regular.otf");
 }
 
 function polygon(x, y, radius, npoints) {
   let angle = TWO_PI / npoints;
+  beginShape();
   for (let a = 0; a < TWO_PI; a += angle) {
     let sx = x + cos(a) * radius;
     let sy = y + sin(a) * radius;
-    let sx2 = x + cos(a + angle) * radius;
-    let sy2 = y + sin(a + angle) * radius;
-    fill(random(palette));
-    //   line(x, y, sx, sy);
-    beginShape();
-    vertex(x, y);
     vertex(sx, sy);
-    vertex(sx2, sy2);
-    endShape(CLOSE);
   }
+  endShape(CLOSE);
 }
 
 class Hexagon {
@@ -31,15 +26,15 @@ class Hexagon {
   }
 
   display() {
+    stroke(this.color);
+    strokeWeight(this.radius / 30);
+    this.color.setAlpha(80);
     fill(this.color);
+    polygon(this.x, this.y, this.radius - 10, 6);
+  }
 
-    stroke(0);
-    strokeWeight(0.2);
-    polygon(this.x, this.y, this.radius, 6);
-
-    strokeWeight(0.4);
-    noFill();
-    ellipse(this.x, this.y, this.radius);
+  breathe(frameCount) {
+    this.radius += sin(frameCount / 60) * 1.7;
   }
 }
 
@@ -56,7 +51,9 @@ function setup() {
   createCanvas(w, w);
 
   background(24);
-  hexs = tilePlaneHex(90);
+  hexs = tilePlaneHex(140);
+
+  //   recursiveHexs(hexs, 5);
 }
 
 function draw() {
@@ -64,6 +61,7 @@ function draw() {
   background(24);
 
   hexs.map((h) => h.display());
+  hexs.map((h) => h.breathe(frameCount));
 
   addHandle();
   if (saving) save("frame" + frameCount + ".png");
@@ -76,25 +74,44 @@ function tilePlaneHex(radius) {
   dx = radius + l / 2;
 
   hexs = [];
-  for (let i = offset; i < width / dx - offset + radius; i++) {
-    for (let j = offset; j < height / dy - offset + radius; j++) {
+  for (let i = offset; i < width / dx - offset; i++) {
+    for (let j = offset; j < height / dy - offset; j++) {
       if (i % 2 == 0) {
         y = j * dy;
       } else {
         y = b + j * dy;
       }
       x = i * dx;
-      hexs.push(new Hexagon(x, y, radius, color("#AAAAAAA5")));
+      hexs.push(new Hexagon(x, y, radius, color(random(palette))));
     }
   }
+  console.log(hexs.length);
 
   return hexs;
+}
+
+function recursiveHexs(hexs, n = 2) {
+  if (n > 0) {
+    hexs.forEach((h) => {
+      hexs.push(
+        new Hexagon(
+          h.x,
+          h.y,
+          h.radius - Math.log(n * 10),
+          color(random(palette))
+        )
+      );
+    });
+    recursiveHexs(hexs, n - 1);
+  }
+  console.log(hexs.length);
 }
 
 ////////////////////////////
 function addHandle() {
   fill(40);
-  noStroke();
+  stroke(250);
+  strokeWeight(4);
   textAlign(RIGHT, BOTTOM);
   textFont(font);
   textSize(20);
