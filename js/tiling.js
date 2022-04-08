@@ -30,7 +30,7 @@ class Hexagon {
     strokeWeight(this.radius / 30);
     this.color.setAlpha(80);
     fill(this.color);
-    polygon(this.x, this.y, this.radius - 10, 6);
+    polygon(this.x, this.y, this.radius - 5, 6);
   }
 
   breathe(frameCount) {
