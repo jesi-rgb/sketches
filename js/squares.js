@@ -1,10 +1,10 @@
 let offset = 200;
 let spacing = 50;
 
-// let fontMono;
-// function preload() {
-//   fontMono = loadFont("SF-Mono-Regular.otf");
-// }
+let fontMono;
+function preload() {
+  fontMono = loadFont("SF-Mono-Regular.otf");
+}
 
 class Rectangle {
   constructor(x, y, w, h, c = color(127)) {
@@ -16,8 +16,7 @@ class Rectangle {
   }
 
   display() {
-    noFill();
-    stroke(color(255, 0, 0));
+    stroke(0);
     // line(offset, this.y, this.x, this.y);
     // line(this.x, this.y, width - offset, this.y);
     strokeWeight(5);
@@ -30,7 +29,7 @@ class Rectangle {
 
 let rects = [];
 function setup() {
-  w = min(windowWidth, windowHeight) - 100;
+  w = min(windowWidth, windowHeight);
   wx = w;
   wy = w;
   createCanvas(wx, wy);
@@ -48,22 +47,22 @@ function draw() {
   blendMode(BLEND);
   noLoop();
   //   drawFrame();
-  //   addHandle();
+  addHandle();
 }
 
-function advancedGradientSquare(x_min, y_min, w, h, power = 1, minAlpha = 40) {
+function advancedGradientSquare(x_min, y_min, w, h, power = 0, minAlpha = 40) {
   x_max = x_min + w;
   y_max = y_min + h;
   perFrame = 300;
-  iterations = 500;
+  iterations = 1000;
   for (a = 0; a < iterations; a++) {
     for (i = 0; i < perFrame; i++) {
       x = random(x_min, x_max);
       y = random(y_min, y_max);
-      _alpha = minAlpha + pow(y / y_max, power);
+      _alpha = pow(y / y_max, power);
       // _alpha = minAlpha + pow(x / x_max, power);
 
-      alpha_v = map(_alpha, minAlpha, minAlpha + pow(0, power), 0, 255);
+      alpha_v = map(_alpha, 0, pow(1, power), 0, 50);
       c = color(20, 20, 40, alpha_v);
       noStroke();
       fill(c);
@@ -91,7 +90,7 @@ function populateFrame() {
 
     rects.push(
       //   new Rectangle(x, y, w, h, color(map(i, 0, 6, 0, 255), 20, 20, 160))
-      new Rectangle(x, y, w, h, color(map(i, 0, 6, 0, 255), 20, 20, 160))
+      new Rectangle(x, y, w, h, color(20, 20, 20, 160))
     );
   }
 }
@@ -163,9 +162,9 @@ function drawFrame() {
 function addHandle() {
   textFont(fontMono);
 
-  textSize(40);
-  noStroke();
-  fill(255, 150);
+  textSize(15);
+  stroke(250, 245, 240);
+  fill(24);
 
   textAlign(RIGHT, BASELINE);
   text("@jesi_rgb", w - 50, w - 50);

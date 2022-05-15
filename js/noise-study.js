@@ -1,7 +1,7 @@
-let font;
-function preload() {
-  font = loadFont("../SF-Mono-Regular.otf");
-}
+// let font;
+// function preload() {
+//   font = loadFont("../SF-Mono-Regular.otf");
+// }
 
 function setup() {
   seed = random(1, 10000);
@@ -16,11 +16,12 @@ function setup() {
 }
 
 function draw() {
-  perlinGradientSquare(300, 300, 500, 500);
-  updatePixels();
-  addHandle();
+  //   advancedGradientSquare(0, 0, width, height);
+  advancedGradientSquare(0, 0, width, height);
+
+  //   addHandle();
   if (saving) save("frame" + frameCount + ".png");
-  //   noLoop();
+  noLoop();
 }
 
 //////////////////////////////////////////////////////////
@@ -37,21 +38,25 @@ function gradientSquare(x_min, x_max, y_min, y_max) {
   updatePixels();
 }
 
-function advancedGradientSquare(x_min, y_min, w, h, power = 3, minAlpha = 10) {
+function advancedGradientSquare(x_min, y_min, w, h, power = 2, minAlpha = 0) {
   x_max = x_min + w;
   y_max = y_min + h;
   perFrame = 300;
-  for (i = 0; i < perFrame; i++) {
-    x = random(x_min, x_max);
-    y = random(y_min, y_max);
-    _alpha = minAlpha + pow(y / y_max, power);
-    // _alpha = minAlpha + pow(x / x_max, power);
+  iterations = 1000;
+  print(power);
+  for (a = 0; a < iterations; a++) {
+    for (i = 0; i < perFrame; i++) {
+      x = random(x_min, x_max);
+      y = random(y_min, y_max);
+      //   _alpha = minAlpha + pow(y / y_max, power);
+      _alpha = minAlpha + 245 * pow(x / x_max, power);
 
-    alpha_v = map(_alpha, minAlpha, minAlpha + pow(1, power), 0, 255);
-    c = color(20, 20, 40, alpha_v);
-    noStroke();
-    fill(c);
-    circle(x, y, 1 + (1 / sqrt(4 * frameCount)) * 5);
+      alpha_v = map(_alpha, minAlpha, minAlpha + 245 * pow(0.5, power), 255, 0);
+      c = color(20, 20, 45, alpha_v);
+      noStroke();
+      fill(c);
+      circle(x, y, 2 + (1 / sqrt(4 * a)) * 5);
+    }
   }
 }
 
