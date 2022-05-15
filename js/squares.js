@@ -1,10 +1,10 @@
 let offset = 200;
 let spacing = 50;
 
-let fontMono;
-function preload() {
-  fontMono = loadFont("SF-Mono-Regular.otf");
-}
+// let fontMono;
+// function preload() {
+//   fontMono = loadFont("SF-Mono-Regular.otf");
+// }
 
 class Rectangle {
   constructor(x, y, w, h, c = color(127)) {
@@ -37,7 +37,8 @@ function setup() {
 }
 
 function draw() {
-  background(24);
+  background(250, 245, 240);
+  advancedGradientSquare(0, 0, width, height);
   populateFrame();
 
   rects.forEach((r) => {
@@ -47,7 +48,28 @@ function draw() {
   blendMode(BLEND);
   noLoop();
   //   drawFrame();
-  addHandle();
+  //   addHandle();
+}
+
+function advancedGradientSquare(x_min, y_min, w, h, power = 1, minAlpha = 40) {
+  x_max = x_min + w;
+  y_max = y_min + h;
+  perFrame = 300;
+  iterations = 500;
+  for (a = 0; a < iterations; a++) {
+    for (i = 0; i < perFrame; i++) {
+      x = random(x_min, x_max);
+      y = random(y_min, y_max);
+      _alpha = minAlpha + pow(y / y_max, power);
+      // _alpha = minAlpha + pow(x / x_max, power);
+
+      alpha_v = map(_alpha, minAlpha, minAlpha + pow(0, power), 0, 255);
+      c = color(20, 20, 40, alpha_v);
+      noStroke();
+      fill(c);
+      circle(x, y, 1 + (1 / sqrt(4 * a)) * 5);
+    }
+  }
 }
 
 function populateFrame() {
@@ -68,6 +90,7 @@ function populateFrame() {
     i++;
 
     rects.push(
+      //   new Rectangle(x, y, w, h, color(map(i, 0, 6, 0, 255), 20, 20, 160))
       new Rectangle(x, y, w, h, color(map(i, 0, 6, 0, 255), 20, 20, 160))
     );
   }
