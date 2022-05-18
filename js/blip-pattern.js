@@ -3,33 +3,57 @@ function setup() {
   w = min(windowWidth, windowHeight);
   createCanvas(w, w);
   strokeWeight(4);
-  off = 100;
-  spc = 3;
+  spc = 5;
   spc *= 10;
+  off = 50 + spc;
   noLoop();
   looping = false;
+  saving = false;
 }
 
 function draw() {
   background(250, 245, 240);
-  drawGrid((pattern = 18));
+
+  drawGrid((pattern = 9));
+
+  if (saving) save("frame" + frameCount + ".png");
 }
 
 function drawGrid(pattern = 19) {
   i = 0;
-  t = frameCount / 10;
+  t = frameCount / 80;
   for (x = off; x < w - off; x += spc) {
     for (y = off; y < w - off; y += spc) {
-      for (p = 0; p < pattern; p++) {
-        if ((i + p) % pattern == floor(t) % pattern) {
-          _alpha = map(p, 0, pattern, 255, 0);
-          str_w = map(p, 0, pattern, spc, spc / 10);
-          stroke(20, 20, 45, _alpha);
-          strokeWeight(str_w);
-        }
+      rate = x / 2 + y / 2 + t;
+
+      if (i % 2 == 0) {
+        val = sin(rate);
+      } else {
+        val = cos(rate);
       }
 
-      point(y, x);
+      str_w = map(val, -1, 1, spc / 2, spc);
+      str_alpha = map(val, -1, 1, 40, 255);
+      strokeWeight(str_w);
+      stroke(20, 20, 45, str_alpha);
+
+      //   for (p = 0; p < pattern; p++) {
+      //     if ((i + p) % pattern == floor(t) % pattern) {
+      //       //   print(i, p, floor(t), floor(t) % pattern);
+      //       _alpha = map(p, 0, pattern, 255, 0);
+      //       str_w = map(p, 0, pattern, spc, spc / 10);
+      //       stroke(20, 20, 45, _alpha);
+      //       strokeWeight(str_w);
+      //     }
+      //   }
+      //   p = abs((i - pattern) % pattern);
+      //   p = (i + p) % pattern == floor(t) % pattern ? p : 0;
+      //   _alpha = map(p, 0, pattern, 255, 0);
+      //   str_w = map(p, 0, pattern, spc, spc / 10);
+      //   stroke(20, 20, 45, _alpha);
+      //   strokeWeight(str_w);
+
+      point(x, y);
       i++;
     }
   }
@@ -49,5 +73,17 @@ function mousePressed() {
       loop();
       looping = true;
     }
+  }
+}
+
+function keyPressed() {
+  console.log(keyCode);
+  if (keyCode == 83) {
+    frameRate(10);
+    // frameCount = 0;
+    saving = !saving;
+    looping = !looping;
+
+    if (looping) loop();
   }
 }
