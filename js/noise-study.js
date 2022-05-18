@@ -48,14 +48,14 @@ function advancedGradientSquare(x_min, y_min, w, h, power = 2, minAlpha = 0) {
     for (i = 0; i < perFrame; i++) {
       x = random(x_min, x_max);
       y = random(y_min, y_max);
-      //   _alpha = minAlpha + pow(y / y_max, power);
-      _alpha = minAlpha + 245 * pow(x / x_max, power);
+      _alpha = minAlpha + 45 * pow(y / y_max, power);
+      //   _alpha = minAlpha + 245 * pow(x / x_max, power);
 
       alpha_v = map(_alpha, minAlpha, minAlpha + 245 * pow(0.5, power), 255, 0);
       c = color(20, 20, 45, alpha_v);
       noStroke();
       fill(c);
-      circle(x, y, 2 + (1 / sqrt(4 * a)) * 5);
+      circle(x, y, 1.5 + (1 / sqrt(3 * a)) * 10);
     }
   }
 }
