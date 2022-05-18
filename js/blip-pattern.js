@@ -1,20 +1,21 @@
 function setup() {
-  //   frameRate(12);
+  //   frameRate(4);
   w = min(windowWidth, windowHeight);
   createCanvas(w, w);
   strokeWeight(4);
-  spc = 5;
+  spc = 3;
   spc *= 10;
-  off = 50 + spc;
+  off = 51 + spc;
   noLoop();
   looping = false;
   saving = false;
+  angle = 0;
 }
 
 function draw() {
   background(250, 245, 240);
 
-  gridPatternBased();
+  gridDistBased();
 
   if (saving) save("frame" + frameCount + ".png");
 }
@@ -42,9 +43,47 @@ function gridSineBased() {
     }
   }
 }
-function gridPatternBased(pattern = 19) {
+
+function gridDistBased() {
   i = 0;
   t = frameCount / 20;
+  radius = 300;
+
+  var x_c = width / 2 + radius * cos(angle);
+  var y_c = height / 2 + radius * sin(angle);
+
+  angle += 0.02;
+
+  //   stroke(255, 0, 0);
+  //   point(x_c, y_c);
+
+  for (x = off; x < w - off; x += spc) {
+    for (y = off; y < w - off; y += spc) {
+      d_1 = dist(x, y, x_c, y_c);
+      d_2 = dist(x, y, width - x_c, height - y_c);
+
+      d_s_1 = t + d_1 / 20;
+      d_s_2 = t + d_2 / 20;
+
+      if (i % 2 == 0) {
+        val = sin(d_s_1);
+      } else {
+        val = cos(d_s_2);
+      }
+
+      str_w = map(val, -1, 1, spc / 2, spc);
+      str_alpha = map(val, -1, 1, 0, 255);
+      strokeWeight(str_w);
+      stroke(20, 20, 45, str_alpha);
+
+      point(x, y);
+      i++;
+    }
+  }
+}
+function gridPatternBased(pattern = 19) {
+  i = 0;
+  t = frameCount;
   for (x = off; x < w - off; x += spc) {
     for (y = off; y < w - off; y += spc) {
       for (p = 0; p < pattern; p++) {
@@ -82,7 +121,7 @@ function mousePressed() {
 function keyPressed() {
   console.log(keyCode);
   if (keyCode == 83) {
-    frameRate(10);
+    frameRate(15);
     // frameCount = 0;
     saving = !saving;
     looping = !looping;
