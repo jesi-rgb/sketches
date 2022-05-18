@@ -1,9 +1,9 @@
 function setup() {
-  frameRate(12);
+  //   frameRate(12);
   w = min(windowWidth, windowHeight);
   createCanvas(w, w);
   strokeWeight(4);
-  off = 200;
+  off = 100;
   spc = 3;
   spc *= 10;
   noLoop();
@@ -12,23 +12,24 @@ function setup() {
 
 function draw() {
   background(250, 245, 240);
-  drawGrid((pattern = 11));
+  drawGrid((pattern = 18));
 }
 
 function drawGrid(pattern = 19) {
   i = 0;
+  t = frameCount / 10;
   for (x = off; x < w - off; x += spc) {
     for (y = off; y < w - off; y += spc) {
-      a = floor(map(sin(frameCount / 100), -1, 1, 2, 20));
-
-      if (i % pattern == floor(frameCount / 5) % pattern) {
-        stroke(20, 20, 45);
-        strokeWeight(spc);
-      } else {
-        stroke(20, 20, 45, 160);
-        strokeWeight(spc / 2);
+      for (p = 0; p < pattern; p++) {
+        if ((i + p) % pattern == floor(t) % pattern) {
+          _alpha = map(p, 0, pattern, 255, 0);
+          str_w = map(p, 0, pattern, spc, spc / 10);
+          stroke(20, 20, 45, _alpha);
+          strokeWeight(str_w);
+        }
       }
-      point(x, y);
+
+      point(y, x);
       i++;
     }
   }
