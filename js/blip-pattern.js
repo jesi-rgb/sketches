@@ -14,14 +14,14 @@ function setup() {
 function draw() {
   background(250, 245, 240);
 
-  drawGrid((pattern = 9));
+  gridPatternBased();
 
   if (saving) save("frame" + frameCount + ".png");
 }
 
-function drawGrid(pattern = 19) {
+function gridSineBased() {
   i = 0;
-  t = frameCount / 80;
+  t = frameCount / 20;
   for (x = off; x < w - off; x += spc) {
     for (y = off; y < w - off; y += spc) {
       rate = x / 2 + y / 2 + t;
@@ -37,21 +37,24 @@ function drawGrid(pattern = 19) {
       strokeWeight(str_w);
       stroke(20, 20, 45, str_alpha);
 
-      //   for (p = 0; p < pattern; p++) {
-      //     if ((i + p) % pattern == floor(t) % pattern) {
-      //       //   print(i, p, floor(t), floor(t) % pattern);
-      //       _alpha = map(p, 0, pattern, 255, 0);
-      //       str_w = map(p, 0, pattern, spc, spc / 10);
-      //       stroke(20, 20, 45, _alpha);
-      //       strokeWeight(str_w);
-      //     }
-      //   }
-      //   p = abs((i - pattern) % pattern);
-      //   p = (i + p) % pattern == floor(t) % pattern ? p : 0;
-      //   _alpha = map(p, 0, pattern, 255, 0);
-      //   str_w = map(p, 0, pattern, spc, spc / 10);
-      //   stroke(20, 20, 45, _alpha);
-      //   strokeWeight(str_w);
+      point(x, y);
+      i++;
+    }
+  }
+}
+function gridPatternBased(pattern = 19) {
+  i = 0;
+  t = frameCount / 20;
+  for (x = off; x < w - off; x += spc) {
+    for (y = off; y < w - off; y += spc) {
+      for (p = 0; p < pattern; p++) {
+        if ((i + p) % pattern == floor(t) % pattern) {
+          _alpha = map(p, 0, pattern, 255, 0);
+          str_w = map(p, 0, pattern, spc, spc / 10);
+          stroke(20, 20, 45, _alpha);
+          strokeWeight(str_w);
+        }
+      }
 
       point(x, y);
       i++;
