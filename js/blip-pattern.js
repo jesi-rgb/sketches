@@ -3,26 +3,26 @@ function setup() {
   w = min(windowWidth, windowHeight);
   createCanvas(w, w);
   strokeWeight(4);
-  spc = 3;
-  spc *= 10;
-  off = 51 + spc;
+  spc = w / 23;
+  off = w / 10;
   noLoop();
   looping = false;
   saving = false;
   angle = 0;
+  pattern = 11;
 }
 
 function draw() {
   background(250, 245, 240);
 
-  gridDistBased();
+  gridPatternBased((pattern = 4));
 
   if (saving) save("frame" + frameCount + ".png");
 }
 
 function gridSineBased() {
   i = 0;
-  t = frameCount / 20;
+  t = frameCount / 30;
   for (x = off; x < w - off; x += spc) {
     for (y = off; y < w - off; y += spc) {
       rate = x / 2 + y / 2 + t;
@@ -103,7 +103,7 @@ function gridPatternBased(pattern = 19) {
 
 function mousePressed() {
   if (mouseButton === RIGHT) {
-    save(`frame_${new Date().getMilliseconds()}`);
+    save(`frame_${pattern}`);
   }
 
   if (mouseButton === LEFT) {
