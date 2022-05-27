@@ -26,16 +26,16 @@ function draw() {
   //   rect(offset, offset, w - 2 * offset, w - 2 * offset);
 
   lines();
-  addHandle();
+  //   addHandle();
   if (saving) save("frame" + frameCount + ".png");
 }
 
 function lines() {
   randomSeed(seed);
-  streamWidth = 100;
+  streamWidth = 600;
   x = 0;
   buffY = 30;
-  buffX = 3;
+  buffX = 5;
 
   push();
   translate(w / 2 + streamWidth / 4, w / 2 - streamWidth);
@@ -44,7 +44,7 @@ function lines() {
   while (x < streamWidth) {
     h = -w;
     while (h < w * 3) {
-      if (random() > 0.98) {
+      if (random() > 0.998) {
         stroke(244, 164, 171);
       } else {
         stroke(250, 245, 240, 100);
@@ -53,18 +53,9 @@ function lines() {
       delta_h = random(10, w / 2);
 
       end_point = h + delta_h;
-      strokeW = map(delta_h, 10, w / 2, 2, 1);
-      strokeWeight(strokeW);
-      //   if (end_point > w - offset) {
-      //     end_point = w - offset + random(-5, 5);
-      //     line(x, h, x, end_point);
-      //     break;
-      //   }
 
-      //   stroke(255, 255, 0);
-      //   point(x, h);
-      //   stroke(0, 255, 255);
-      //   point(x, end_point);
+      strokeW = map(delta_h, 10, 13, 3, 0.6);
+      strokeWeight(strokeW);
 
       line(x, h, x, end_point);
 
@@ -89,7 +80,7 @@ function addHandle() {
 
 function mousePressed() {
   if (mouseButton === RIGHT) {
-    save(`frame_${new Date().getMilliseconds()}`);
+    save(`frame_${seed}`);
   }
 
   if (mouseButton === LEFT) {
