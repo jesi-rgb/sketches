@@ -1,7 +1,11 @@
+window.$attributes = {
+  // here define the token features
+  ole: 3,
+};
 function setup() {
   //   frameRate(4);
   w = min(windowWidth, windowHeight);
-  createCanvas(w, w);
+  createCanvas(500, 500);
   strokeWeight(4);
   spc = w / 23;
   off = w / 10;

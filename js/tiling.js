@@ -1,10 +1,14 @@
-let font;
+// let font;
 let offset = 0;
 let palette = ["#3fc1c9", "#f5f5f5", "#fc5185"];
 
-function preload() {
-  font = loadFont("../SF-Mono-Regular.otf");
-}
+// function preload() {
+//   font = loadFont("../SF-Mono-Regular.otf");
+// }
+window.$attributes = {
+  // here define the token features
+  ole: 3,
+};
 
 function polygon(x, y, radius, npoints) {
   let angle = TWO_PI / npoints;
@@ -30,28 +34,28 @@ class Hexagon {
     strokeWeight(this.radius / 30);
     this.color.setAlpha(80);
     fill(this.color);
-    polygon(this.x, this.y, this.radius - 5, 6);
+    polygon(this.x, this.y, this.radius, 6);
   }
 
   breathe(frameCount) {
-    this.radius += sin(frameCount / 60) * 1.7;
+    this.radius += sin(frameCount / 20) * 0.04;
   }
 }
 
 function setup() {
-  seed = random(1, 10000);
-  randomSeed(seed);
-  console.log(seed);
+  randomSeed(inputSeed);
+  console.log(inputSeed);
 
   looping = false;
   saving = false;
   noLoop();
 
   w = min(windowHeight, windowWidth);
+  console.log(w);
   createCanvas(w, w);
 
   background(24);
-  hexs = tilePlaneHex(140);
+  hexs = tilePlaneHex(w * 0.1);
 
   //   recursiveHexs(hexs, 5);
 }
@@ -63,7 +67,7 @@ function draw() {
   hexs.map((h) => h.display());
   hexs.map((h) => h.breathe(frameCount));
 
-  addHandle();
+  //   addHandle();
   if (saving) save("frame" + frameCount + ".png");
 }
 
@@ -74,15 +78,22 @@ function tilePlaneHex(radius) {
   dx = radius + l / 2;
 
   hexs = [];
-  for (let i = offset; i < width / dx - offset; i++) {
-    for (let j = offset; j < height / dy - offset; j++) {
+  for (let i = offset; i < width / dx - offset + 1; i++) {
+    for (let j = offset; j < height / dy - offset + 1; j++) {
       if (i % 2 == 0) {
         y = j * dy;
       } else {
         y = b + j * dy;
       }
       x = i * dx;
-      hexs.push(new Hexagon(x, y, radius, color(random(palette))));
+      hexs.push(
+        new Hexagon(
+          x,
+          y,
+          radius,
+          color(palette[int(random(0, palette.length))])
+        )
+      );
     }
   }
   console.log(hexs.length);
