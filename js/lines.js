@@ -1,4 +1,6 @@
 let font;
+
+let offset = 100;
 function preload() {
   font = loadFont("../SF-Mono-Regular.otf");
 }
@@ -11,37 +13,68 @@ function setup() {
   saving = false;
   noLoop();
   w = min(windowHeight, windowWidth);
+  print(w - offset);
   createCanvas(w, w);
   background(24);
 }
 
 function draw() {
   colorMode(RGB);
-  background(24);
+  background(20, 20, 45);
+  //   noFill();
+  //   stroke(240, 100);
+  //   rect(offset, offset, w - 2 * offset, w - 2 * offset);
+
   lines();
   addHandle();
   if (saving) save("frame" + frameCount + ".png");
 }
 
 function lines() {
-  push();
-  translate(w / 2, w / 2);
-  rotate(radians(0));
-  x1 = y1 = 0;
-  x2 = 0;
+  x = offset;
+  h = offset;
+  buffY = 10;
+  buffX = 20;
 
-  stroke(250);
-  for (i = 0; i < 100; i++) {
-    y2 = i;
-    line(x1, y1, x2, y2);
+  while (x < w - offset) {
+    h = offset + random(-5, 5);
+    while (h < w - offset) {
+      strokeWeight(2);
+
+      if (random() > 0.98) {
+        stroke(250, 245, 240);
+      } else {
+        stroke(250, 245, 240, 100);
+      }
+
+      delta_h = random(10, w / 6);
+
+      end_point = h + delta_h;
+      if (end_point > w - offset) {
+        end_point = w - offset + random(-5, 5);
+        line(x, h, x, end_point);
+        break;
+      }
+
+      //   stroke(255, 255, 0);
+      //   point(x, h);
+      //   stroke(0, 255, 255);
+      //   point(x, end_point);
+
+      line(x, h, x, end_point);
+
+      h += delta_h + buffY;
+      print("h", h);
+    }
+    x += buffX;
+    print("x", x);
   }
-  pop();
 }
 
 /////////////////////////////////////////////////// utils
 
 function addHandle() {
-  fill(40);
+  fill(250, 250, 220);
   noStroke();
   textAlign(RIGHT, BOTTOM);
   textFont(font);
