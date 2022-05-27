@@ -33,42 +33,46 @@ function draw() {
 function lines() {
   x = offset;
   h = offset;
-  buffY = 10;
-  buffX = 20;
+  buffY = 5;
+  buffX = 5;
+  push();
+
+  translate(w / 2, w / 2);
+  rotate(radians(45));
 
   while (x < w - offset) {
-    h = offset + random(-5, 5);
-    while (h < w - offset) {
-      strokeWeight(2);
-
+    h = offset + random(-5, 5) - w / 2;
+    while (h < w * 2) {
       if (random() > 0.98) {
-        stroke(250, 245, 240);
+        stroke(244, 164, 171);
       } else {
         stroke(250, 245, 240, 100);
       }
 
-      delta_h = random(10, w / 6);
+      delta_h = random(10, w / 2);
 
       end_point = h + delta_h;
-      if (end_point > w - offset) {
-        end_point = w - offset + random(-5, 5);
-        line(x, h, x, end_point);
-        break;
-      }
+      strokeW = map(delta_h, 10, w / 6, 2, 1);
+      strokeWeight(strokeW);
+      //   if (end_point > w - offset) {
+      //     end_point = w - offset + random(-5, 5);
+      //     line(x, h, x, end_point);
+      //     break;
+      //   }
 
       //   stroke(255, 255, 0);
       //   point(x, h);
       //   stroke(0, 255, 255);
       //   point(x, end_point);
 
-      line(x, h, x, end_point);
+      line(x - w / 2, h - w / 2, x - w / 2, end_point - w / 2);
 
       h += delta_h + buffY;
-      print("h", h);
     }
     x += buffX;
-    print("x", x);
   }
+
+  pop();
 }
 
 /////////////////////////////////////////////////// utils
