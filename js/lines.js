@@ -31,18 +31,19 @@ function draw() {
 }
 
 function lines() {
-  x = offset;
-  h = offset;
-  buffY = 5;
-  buffX = 5;
-  push();
+  randomSeed(seed);
+  streamWidth = 100;
+  x = 0;
+  buffY = 30;
+  buffX = 3;
 
-  translate(w / 2, w / 2);
+  push();
+  translate(w / 2 + streamWidth / 4, w / 2 - streamWidth);
   rotate(radians(45));
 
-  while (x < w - offset) {
-    h = offset + random(-5, 5) - w / 2;
-    while (h < w * 2) {
+  while (x < streamWidth) {
+    h = -w;
+    while (h < w * 3) {
       if (random() > 0.98) {
         stroke(244, 164, 171);
       } else {
@@ -52,7 +53,7 @@ function lines() {
       delta_h = random(10, w / 2);
 
       end_point = h + delta_h;
-      strokeW = map(delta_h, 10, w / 6, 2, 1);
+      strokeW = map(delta_h, 10, w / 2, 2, 1);
       strokeWeight(strokeW);
       //   if (end_point > w - offset) {
       //     end_point = w - offset + random(-5, 5);
@@ -65,7 +66,7 @@ function lines() {
       //   stroke(0, 255, 255);
       //   point(x, end_point);
 
-      line(x - w / 2, h - w / 2, x - w / 2, end_point - w / 2);
+      line(x, h, x, end_point);
 
       h += delta_h + buffY;
     }
