@@ -8,9 +8,8 @@ let offset = 100;
 // }
 
 function setup() {
-  seed = random(1, 10000);
-  randomSeed(seed);
-  console.log(seed);
+  randomSeed(inputSeed);
+  console.log(inputSeed);
   looping = false;
   saving = false;
   noLoop();
@@ -67,11 +66,12 @@ function draw() {
 }
 
 function lines() {
-  randomSeed(seed);
-  streamWidth = 500;
+  //exposed parameters
+  streamWidth = random(50, 500);
+  buffY = random(5, 50);
+  buffX = random(1, 10);
+
   x = 0;
-  buffY = 30;
-  buffX = 5;
 
   push();
   translate(w / 2 + streamWidth / 4, w / 2 - streamWidth);
@@ -116,7 +116,7 @@ function addHandle() {
 
 function mousePressed() {
   if (mouseButton === RIGHT) {
-    save(`frame_${seed}`);
+    save(`frame_${seed}.png`);
   }
 
   if (mouseButton === LEFT) {
