@@ -1,9 +1,11 @@
 let font;
+let palettes;
+let palette;
 
 let offset = 100;
-function preload() {
-  font = loadFont("../SF-Mono-Regular.otf");
-}
+// function preload() {
+//   font = loadFont("../SF-Mono-Regular.otf");
+// }
 
 function setup() {
   seed = random(1, 10000);
@@ -15,12 +17,46 @@ function setup() {
   w = min(windowHeight, windowWidth);
   print(w - offset);
   createCanvas(w, w);
-  background(24);
+
+  palettes = [
+    {
+      bg: color(20, 20, 45),
+      main: color(250, 245, 240, 100),
+      accent: color(244, 164, 171),
+    },
+    {
+      bg: color(20, 18, 4),
+      main: color(238, 42, 16, 100),
+      accent: color(84, 68, 43),
+    },
+    {
+      bg: color(106, 127, 98),
+      main: color(200, 198, 175, 200),
+      accent: color(215, 208, 200),
+    },
+    {
+      bg: color(33, 28, 29),
+      main: color(5, 142, 217, 200),
+      accent: color(244, 235, 217),
+    },
+    {
+      bg: color(245, 243, 246),
+      main: color(64, 69, 79, 200),
+      accent: color(187, 78, 164),
+    },
+    {
+      bg: color(81, 75, 35),
+      main: color(101, 104, 57),
+      accent: color(203, 201, 173),
+    },
+  ];
+  palette = random(palettes);
+  //   palette = palettes[palettes.length - 1];
 }
 
 function draw() {
   colorMode(RGB);
-  background(20, 20, 45);
+  background(palette.bg);
   //   noFill();
   //   stroke(240, 100);
   //   rect(offset, offset, w - 2 * offset, w - 2 * offset);
@@ -32,7 +68,7 @@ function draw() {
 
 function lines() {
   randomSeed(seed);
-  streamWidth = 600;
+  streamWidth = 500;
   x = 0;
   buffY = 30;
   buffX = 5;
@@ -44,10 +80,10 @@ function lines() {
   while (x < streamWidth) {
     h = -w;
     while (h < w * 3) {
-      if (random() > 0.998) {
-        stroke(244, 164, 171);
+      if (random() > 0.948) {
+        stroke(palette.accent);
       } else {
-        stroke(250, 245, 240, 100);
+        stroke(palette.main);
       }
 
       delta_h = random(10, w / 2);
