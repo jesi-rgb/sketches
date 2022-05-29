@@ -1,4 +1,4 @@
-let font;
+// let font;
 let palettes;
 let palette;
 
@@ -8,39 +8,45 @@ let offset = 100;
 // }
 
 function setup() {
-  randomSeed(inputSeed);
-  console.log(inputSeed);
+  w = min(windowHeight, windowWidth);
+  createCanvas(w, w);
+
+  if (!seed) {
+    seed = random(0, 999999);
+  } else {
+    seed = hashCode(seed);
+  }
+
+  randomSeed(seed);
+  print(seed);
   looping = false;
   saving = false;
   noLoop();
-  w = min(windowHeight, windowWidth);
-  print(w - offset);
-  createCanvas(w, w);
 
   palettes = [
     {
       bg: color(20, 20, 45),
-      main: color(250, 245, 240, 100),
+      main: color(250, 245, 240),
       accent: color(244, 164, 171),
     },
     {
       bg: color(20, 18, 4),
-      main: color(238, 42, 16, 100),
-      accent: color(84, 68, 43),
+      main: color(238, 42, 16),
+      accent: color(220, 208, 188),
     },
     {
       bg: color(106, 127, 98),
-      main: color(200, 198, 175, 200),
+      main: color(200, 198, 175),
       accent: color(215, 208, 200),
     },
     {
       bg: color(33, 28, 29),
-      main: color(5, 142, 217, 200),
+      main: color(5, 142, 217),
       accent: color(244, 235, 217),
     },
     {
       bg: color(245, 243, 246),
-      main: color(64, 69, 79, 200),
+      main: color(64, 69, 79),
       accent: color(187, 78, 164),
     },
     {
@@ -48,8 +54,44 @@ function setup() {
       main: color(101, 104, 57),
       accent: color(203, 201, 173),
     },
+    {
+      bg: color(49, 57, 60),
+      main: color(33, 118, 255),
+      accent: color(174, 218, 254),
+    },
+    {
+      bg: color(110, 68, 255),
+      main: color(184, 146, 255),
+      accent: color(255, 194, 226),
+    },
+    {
+      bg: color(15, 32, 46),
+      main: color(195, 60, 84),
+      accent: color(215, 207, 7),
+    },
+    {
+      bg: color(35, 0, 7),
+      main: color(217, 131, 36),
+      accent: color(215, 207, 7),
+    },
+    {
+      bg: color(238, 240, 242),
+      main: color(20, 20, 20),
+      accent: color(205, 162, 19),
+    },
+    {
+      bg: color(172, 195, 166),
+      main: color(20, 20, 20),
+      accent: color(164, 14, 76),
+    },
+    {
+      bg: color(48, 26, 75),
+      main: color(109, 177, 191),
+      accent: color(255, 234, 236),
+    },
   ];
   palette = random(palettes);
+  //   palette = palettes[1];
   //   palette = palettes[palettes.length - 1];
 }
 
@@ -67,9 +109,19 @@ function draw() {
 
 function lines() {
   //exposed parameters
-  streamWidth = random(50, 500);
+  streamWidth = int(random(1, 800));
+
   buffY = random(5, 50);
-  buffX = random(1, 10);
+  buffX = random(1, 20);
+
+  minStrokeWidth = 0.7;
+  maxStrokeWidth = map(buffX, 1, 20, 0.7, 8);
+
+  accentChance = random(0.9, 0.999);
+  minLineLength = random(5, 10);
+  maxLineLength = random(minLineLength + 10, w / 2);
+
+  print(streamWidth, buffX, buffY, accentChance);
 
   x = 0;
 
@@ -79,18 +131,24 @@ function lines() {
 
   while (x < streamWidth) {
     h = -w;
-    while (h < w * 3) {
-      if (random() > 0.948) {
+    while (h < w * random(0, 2)) {
+      if (random() > accentChance) {
         stroke(palette.accent);
       } else {
         stroke(palette.main);
       }
 
-      delta_h = random(10, w / 2);
+      delta_h = random(minLineLength, maxLineLength);
 
       end_point = h + delta_h;
 
-      strokeW = map(delta_h, 10, 13, 3, 0.6);
+      strokeW = map(
+        delta_h,
+        minLineLength,
+        maxLineLength,
+        minStrokeWidth,
+        maxStrokeWidth
+      );
       strokeWeight(strokeW);
 
       line(x, h, x, end_point);
@@ -167,4 +225,14 @@ function keyPressed() {
     default:
       break;
   }
+}
+
+function hashCode(str) {
+  return str
+    .split("")
+    .reduce(
+      (prevHash, currVal) =>
+        ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0,
+      5
+    );
 }
