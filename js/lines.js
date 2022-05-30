@@ -19,8 +19,6 @@ function setup() {
 
   randomSeed(seed);
   print(seed);
-  looping = false;
-  saving = false;
   noLoop();
 
   palettes = [
@@ -98,16 +96,13 @@ function setup() {
 function draw() {
   colorMode(RGB);
   background(palette.bg);
-  //   noFill();
-  //   stroke(240, 100);
-  //   rect(offset, offset, w - 2 * offset, w - 2 * offset);
 
+  perlinGradientSquare(0, 0, width, height, (power = 0.4));
   lines();
-  //   addHandle();
-  if (saving) save("frame" + frameCount + ".png");
 }
 
 function lines() {
+  blendMode(BLEND);
   //exposed parameters
   streamWidth = int(random(1, 800));
 
@@ -135,7 +130,9 @@ function lines() {
       if (random() > accentChance) {
         stroke(palette.accent);
       } else {
-        stroke(palette.main);
+        c = color(palette.main);
+        c.setAlpha(255);
+        stroke(c);
       }
 
       delta_h = random(minLineLength, maxLineLength);
@@ -161,6 +158,41 @@ function lines() {
   pop();
 }
 
+function perlinGradientSquare(x_min, y_min, w, h, power = 3, minAlpha = 10) {
+  x_max = x_min + w;
+  y_max = y_min + h;
+
+  interpolator = d3.interpolateRgb(palette.bg, palette.main);
+  for (x = 0; x < width; x++) {
+    for (y = 0; y < height; y++) {
+      c = color(interpolator(random(random(random(0, 0.3)))));
+
+      set(x, y, c);
+    }
+  }
+  updatePixels();
+}
+
+function advancedGradientSquare(x_min, y_min, w, h, power = 0, minAlpha = 40) {
+  x_max = x_min + w;
+  y_max = y_min + h;
+  iterations = 450000;
+  for (a = 0; a < iterations; a++) {
+    x = random(x_min, x_max);
+    y = random(y_min, y_max);
+    _alpha = pow(y / y_max, power);
+    // _alpha = minAlpha + pow(x / x_max, power);
+
+    alpha_v = map(_alpha, 0, pow(1, power), 80, 150);
+    noStroke();
+    c = color(palette.main);
+    c.setAlpha(alpha_v);
+    // blendMode(SCREEN);
+    fill(c);
+    circle(x, y, 0.3 + 1 / sqrt(4 * a));
+  }
+}
+
 /////////////////////////////////////////////////// utils
 
 function addHandle() {
@@ -176,30 +208,11 @@ function mousePressed() {
   if (mouseButton === RIGHT) {
     save(`frame_${seed}.png`);
   }
-
-  if (mouseButton === LEFT) {
-    if (looping) {
-      noLoop();
-      looping = false;
-    } else {
-      loop();
-      looping = true;
-    }
-  }
 }
 function keyPressed() {
   console.log(key);
   switch (key) {
     // pressing the 's' key
-    case "s":
-      frameRate(3);
-      frameCount = 0;
-      saving = !saving;
-      looping = !looping;
-
-      if (looping) loop();
-      if (!saving) frameRate(60);
-      break;
 
     // pressing the '0' key
     case "0":
