@@ -165,7 +165,7 @@ function perlinGradientSquare(x_min, y_min, w, h, power = 3, minAlpha = 10) {
   interpolator = d3.interpolateRgb(palette.bg, palette.main);
   for (x = 0; x < width; x++) {
     for (y = 0; y < height; y++) {
-      c = color(interpolator(random(random(random(0, 0.3)))));
+      c = color(interpolator(random(random(random(0, 0.5)))));
 
       set(x, y, c);
     }
