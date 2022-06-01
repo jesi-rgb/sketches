@@ -1,16 +1,17 @@
 let offset;
 let spacing;
 
-let font;
-function preload() {
-  font = loadFont("../SF-Mono-Regular.otf");
-}
+// let font;
+// function preload() {
+//   font = loadFont("../SF-Mono-Regular.otf");
+// }
 
 function setup() {
-  seed = random(1, 10000);
-  // 6658.568178815671
-  // 8250.172416816093
-  randomSeed(seed);
+  if (!seed) {
+    seed = random(0, 999999);
+  } else {
+    seed = hashCode(seed);
+  }
   console.log(seed);
 
   w = min(windowHeight, windowWidth);
@@ -55,7 +56,7 @@ function draw() {
   colorMode(HSB);
   background(initHue, 80, 20, gen_transparency);
   makeSquares();
-  addHandle();
+  //   addHandle();
 
   if (saving) save("grid" + frameCount + ".png");
 }
