@@ -14,7 +14,7 @@ function setup() {
   if (!seed) {
     seed = random(0, 999999);
   } else {
-    seed = hashCode(seed);
+    if (!/^\d+$/.test(seed)) seed = hashCode(seed);
   }
 
   randomSeed(seed);
@@ -114,7 +114,7 @@ function lines() {
 
   accentChance = random(0.9, 0.999);
   minLineLength = random(5, 10);
-  maxLineLength = random(minLineLength + 10, w / 2);
+  maxLineLength = random(minLineLength + 10, 500);
 
   print(streamWidth, buffX, buffY, accentChance);
 
