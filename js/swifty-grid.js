@@ -12,6 +12,7 @@ function setup() {
   } else {
     seed = hashCode(seed);
   }
+  randomSeed(seed);
   console.log(seed);
 
   w = min(windowHeight, windowWidth);
@@ -222,4 +223,14 @@ function keyPressed() {
     default:
       break;
   }
+}
+
+function hashCode(str) {
+  return str
+    .split("")
+    .reduce(
+      (prevHash, currVal) =>
+        ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0,
+      5
+    );
 }
